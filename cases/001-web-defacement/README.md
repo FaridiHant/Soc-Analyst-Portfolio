@@ -19,20 +19,20 @@ The attack wasn't noisy — the brute force wordlist was short and OSINT-informe
 
 ## Key findings
 
-**F-01 — Admin credentials compromised**  
+**01 Admin credentials compromised**  
 Password `batman` appears twice in the POST form data across 412 brute force attempts. Every other password appears once. The second occurrence is the attacker logging in.  
 *Sourcetype: stream:http | Field: form_data*
 
-**F-02 — Website defaced**  
+**02 Website defaced**  
 The web server (192.168.250.70) appears as `src_ip` initiating an outbound GET request — which it should never do. It fetched `poisonivy-is-coming-for-you-batman.jpeg` from `prankglassinebracket.jumpingcrab.com`, an attacker-controlled dynamic DNS domain.  
 *Sourcetype: stream:http | Field: request, site*
 
-**F-03 — Malicious executable deployed**  
+**03 Malicious executable deployed**  
 `3791.exe` was uploaded post-compromise. FortiGate UTM logged the filename. Sysmon EventCode=1 confirms execution and provides the MD5.  
 *MD5: AAE3F5A29935E6ABCC2C2754D12A9AF0*  
 *Sourcetype: fgt_utm (filename) + Sysmon (MD5)*
 
-**F-04 — Pre-staged infrastructure confirmed**  
+**04 Pre-staged infrastructure confirmed**  
 23.22.63.114 was linked to `jumpingcrab.com` domains before the attack date. VirusTotal shows `MirandaTateScreensaver.scr.exe` associated with this IP — a custom spear-phishing payload with a Po1s0n1vy signature embedded in hex inside the binary.  
 *SHA256: 9709473ab351387aab9e816eff3910b9f28a7a70202e250ed46dba8f820f34a8*
 
