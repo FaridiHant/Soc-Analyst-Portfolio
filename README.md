@@ -71,12 +71,11 @@ soc-portfolio/
 │   │   ├── report/             full incident report (PDF)
 │   │   ├── queries/            all SPL queries, one file per investigation phase
 │   │   └── evidence/           IOC list, key screenshots
-│   └── 002-cerber-ransomware/
+│   └── 002-cerber-ransomware
 ├── methodology/
 │   ├── IDEA-framework.md       investigation process I follow
 │   └── spl-reference.md        reusable SPL patterns
-└── tools/
-    └── report-generator/       Python script that builds the PDF reports
+
 ```
 
 ---
