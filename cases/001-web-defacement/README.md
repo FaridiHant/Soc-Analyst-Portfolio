@@ -1,4 +1,4 @@
-# Case 001 — Website Defacement
+# Case 001 Website Defacement
 
 **Dataset:** Splunk BOTSv1  
 **Date:** 2016-08-10, 21:37–22:30 UTC  
