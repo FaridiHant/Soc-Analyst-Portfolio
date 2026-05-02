@@ -52,10 +52,10 @@ Dataset: [Splunk Boss of the SOC v1 (BOTSv1)](https://github.com/splunk/botsv1) 
 
 I use the IDEA methodology for every case. Short version:
 
-1. **Identify** — what log sources exist, what's relevant, what's missing
-2. **Define** — map the fields across sourcetypes before writing a single query
-3. **Explore** — run the 6 universal questions (who, what, when, where, how often, rare)
-4. **Analyze** — cross-source correlation, only claim what two sources confirm
+1. **Identify** ->  what log sources exist, what's relevant, what's missing
+2. **Define** -> map the fields across sourcetypes before writing a single query
+3. **Explore** -> run the 6 universal questions (who, what, when, where, how often, rare)
+4. **Analyze** -> cross-source correlation, only claim what two sources confirm
 
 Full methodology doc is in [methodology/IDEA-framework.md](methodology/IDEA-framework.md).
 
