@@ -20,7 +20,7 @@ Dataset: [Splunk Boss of the SOC v1 (BOTSv1)](https://github.com/splunk/botsv1) 
 ## Skills this work covers
 
 **SIEM & Log Analysis**
-- Splunk SPL — field extraction, rex, stats, timechart, eval
+- Splunk SPL (field extraction, rex, stats, timechart, eval)
 - Multi-sourcetype correlation (HTTP stream, firewall, Sysmon, Windows Event Log, DNS, registry)
 - Identifying gaps in log coverage before drawing conclusions
 
