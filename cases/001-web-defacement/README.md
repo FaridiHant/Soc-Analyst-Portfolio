@@ -113,4 +113,4 @@ Full list in [evidence/iocs.csv](evidence/iocs.csv)
 
 ## A note on the hash gotcha
 
-This tripped me up initially. `fgt_utm` stores a `file_hash` field — that's SHA256 (64 characters). The question asking for the MD5 of `3791.exe` requires Sysmon EventCode=1, which has a separate `MD5` field. Two different fields in two different sourcetypes for the same file. Don't confuse them.
+This tripped me up initially. `fgt_utm` stores a `file_hash` field that's SHA256 (64 characters). The question asking for the MD5 of `3791.exe` requires Sysmon EventCode=1, which has a separate `MD5` field. Two different fields in two different sourcetypes for the same file. Don't confuse them.
