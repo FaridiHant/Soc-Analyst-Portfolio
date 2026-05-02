@@ -1,4 +1,4 @@
-# MITRE ATT&CK Mapping — Case 001 Web Defacement
+# MITRE ATT&CK Mapping Case 001 Web Defacement
 
 All technique mappings are evidence-based. Each one links to the specific log evidence that confirmed it, not just the general concept.
 
@@ -6,7 +6,7 @@ All technique mappings are evidence-based. Each one links to the specific log ev
 
 ## Techniques Observed
 
-### T1595.002 — Active Scanning: Vulnerability Scanning
+### T1595.002 ( Active Scanning: Vulnerability Scanning )
 **Tactic:** Reconnaissance
 
 40.80.148.42 ran Acunetix Web Vulnerability Scanner against imreallynotbatman.com starting at 21:37 UTC. The tool was identified via two independent sources.
