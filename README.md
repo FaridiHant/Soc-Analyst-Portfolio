@@ -87,4 +87,4 @@ Open to feedback, questions, or collaboration. Contact via GitHub or LinkedIn.
 
 ---
 Linkedin ~ https://tz.linkedin.com/in/faridi-hant-60b06b344    
-*Dataset credit: Splunk BOTSv1 — [github.com/splunk/botsv1](https://github.com/splunk/botsv1)*
+*Dataset credit: Splunk BOTSv1 ~ [github.com/splunk/botsv1](https://github.com/splunk/botsv1)*
