@@ -43,8 +43,7 @@ Dataset: [Splunk Boss of the SOC v1 (BOTSv1)](https://github.com/splunk/botsv1) 
 
 **Tools**
 - Splunk Enterprise (BOTSv1 environment)
-- Python — automated PDF report generation (ReportLab)
-- VirusTotal — external threat intelligence enrichment
+- VirusTotal —> external threat intelligence enrichment
 
 ---
 
