@@ -2,7 +2,7 @@
 
 Iam cybersecurity student focusing on SOC operations (threat detection, log analysis, and incident response). This repo documents hands-on investigations using real-world datasets, written up the same way I would in an actual SOC environment.
 
-Everything here is evidence-based. No guessing, no narrative filler — just logs, queries, and conclusions I can defend.
+Everything here is evidence based. Include logs, queries, and conclusions I can defend.
 
 ---
 
