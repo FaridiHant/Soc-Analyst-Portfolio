@@ -1,4 +1,4 @@
-# SPL Reference — Patterns I Use Across Cases
+# SPL Reference (Patterns I Use Across Cases)
 
 Not a tutorial. This is a quick reference for the query patterns that come up in almost every investigation. Organised by what I'm trying to find out, not by command name.
 
