@@ -75,31 +75,31 @@ These questions work on any log type and any scenario. Answer each one with actu
 
 **The six questions:**
 
-**01 — Who?**  
+**01. Who?**  
 Which source IPs are most active? Who is talking to what?  
 ```
 index=botsv1 sourcetype=stream:http | top limit=10 src_ip
 ```
 
-**02 — What?**  
+**02. What?**  
 What actions are most common? What's the top URI, method, or event type?  
 ```
 index=botsv1 sourcetype=stream:http | top limit=10 uri, http_method
 ```
 
-**03 — When?**  
+**03. When?**  
 When did traffic spike? Build a timechart to see bursts.  
 ```
 index=botsv1 sourcetype=stream:http | timechart span=1m count by src_ip
 ```
 
-**04 — Where?**  
+**04. Where?**  
 Where is the traffic going? Is it concentrated on one destination?  
 ```
 index=botsv1 sourcetype=stream:http | stats count by src_ip, dest_ip | sort -count
 ```
 
-**05 — How often?**  
+**05. How often?**  
 What's the failure-to-success ratio? Look for the pattern of many failures followed by a success — that's compromise.  
 ```
 index=botsv1 sourcetype=stream:http http_method=POST
@@ -107,7 +107,7 @@ index=botsv1 sourcetype=stream:http http_method=POST
 | stats count by password | sort -count
 ```
 
-**06 — Rare?**  
+**06. Rare?**  
 What only happened once or twice? Rare events are frequently the most significant. A web server appearing as `src_ip` for an outbound GET is a one-off event that turns out to be the defacement deployment.  
 ```
 index=botsv1 sourcetype=stream:http | rare limit=20 src_ip, http_method
