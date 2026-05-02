@@ -1,4 +1,6 @@
 # SOC Analyst Portfolio
+<img width="1400" height="347" alt="1773560352461" src="https://github.com/user-attachments/assets/97db8026-910a-4eb5-a4a9-1fd3c15a71f6" />
+
 
 Iam cybersecurity student focusing on SOC operations (threat detection, log analysis, and incident response). This repo documents hands-on investigations using real-world datasets, written up the same way I would in an actual SOC environment.
 
