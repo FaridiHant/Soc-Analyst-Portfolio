@@ -8,7 +8,7 @@ The reason I use it is simple: you can't analyze logs you don't know exist, and 
 
 ## The four phases
 
-### I — Identify
+### I —> Identify
 
 Before touching a single query, document what log sources are available and what each one covers.
 
@@ -34,7 +34,7 @@ index=botsv1 | stats count by sourcetype | sort -count
 
 ---
 
-### D — Define
+### D —> Define
 
 Map the key fields across sourcetypes before writing any investigation queries.
 
@@ -67,7 +67,7 @@ index=botsv1 sourcetype=stream:http | head 5 | fieldsummary | table field, count
 
 ---
 
-### E — Explore
+### E —> Explore
 
 Apply six universal questions to the data. Don't start with a hypothesis — let the data show you what's abnormal.
 
