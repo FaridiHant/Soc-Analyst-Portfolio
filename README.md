@@ -81,10 +81,10 @@ soc-portfolio/
 
 ## Background
 
-I'm building this portfolio while studying for my Security+ and working through blue team labs in my spare time. My main interest is SOC operations — specifically the analysis side, not just alert triage. I want to get good at reconstructing what actually happened from logs, not just flagging alerts.
+I'm building this portfolio while studying for my  degree in cyber Security and working through blue team labs in my spare time. My main interest is SOC operations .Specifically the analysis side, not just alert triage. I want to get good at reconstructing what actually happened from logs, not just flagging alerts.
 
 Open to feedback, questions, or collaboration. Contact via GitHub or LinkedIn.
 
 ---
-
+Linkedin ~ https://tz.linkedin.com/in/faridi-hant-60b06b344
 *Dataset credit: Splunk BOTSv1 — [github.com/splunk/botsv1](https://github.com/splunk/botsv1)*
