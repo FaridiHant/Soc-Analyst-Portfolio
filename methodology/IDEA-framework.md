@@ -115,7 +115,7 @@ index=botsv1 sourcetype=stream:http | rare limit=20 src_ip, http_method
 
 ---
 
-### A — Analyze
+### A —> Analyze
 
 Cross-correlate findings across sourcetypes. Every conclusion should have at least two sources where the dataset allows. Single-source conclusions are labelled as such.
 
