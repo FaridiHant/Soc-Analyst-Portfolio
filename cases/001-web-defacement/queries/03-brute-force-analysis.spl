@@ -1,0 +1,76 @@
+-- ============================================================
+-- Case:    INC-BOTSv1-2016-S1-001 | Web Defacement
+-- Phase:   E (Explore) — Pattern: Volume Abuse + Fail → Success
+-- Topic:   Brute Force Attack Analysis
+-- MITRE:   T1110.001 — Brute Force: Password Guessing
+-- CTF:     Q108, Q114, Q115, Q117, Q119
+-- ============================================================
+
+
+-- Step 1 — Confirm the brute force source IP
+-- Sort POST requests to the target by volume
+-- Expected: 23.22.63.114 dominates POST count to admin portal
+-- This answers Q108 (brute force source IP)
+
+index=botsv1 sourcetype=stream:http http_method=POST dest_ip="192.168.250.70"
+| stats count by src_ip
+| sort -count
+
+
+-- Step 2 — Confirm the target endpoint and extract credentials from POST body
+-- The form_data field contains raw POST body including username and password
+
+index=botsv1 sourcetype=stream:http src_ip="23.22.63.114" http_method=POST
+| rex field=form_data "username=(?<username>[^&]+)"
+| rex field=form_data "passwd=(?<password>[^&]+)"
+| table _time, uri, username, password
+| head 10
+
+
+-- Step 3 — Find the first password attempted (chronological order)
+-- Sort by _time ascending, extract password field
+-- Expected: 12345678
+-- This answers Q114 (first brute force password)
+
+index=botsv1 sourcetype=stream:http src_ip="23.22.63.114"
+  uri="/joomla/administrator/index.php" http_method=POST
+| rex field=form_data "passwd=(?<password>[^&]+)"
+| sort _time
+| table _time, password
+| head 1
+
+
+-- Step 4 — Find the 6-character alphabetic password (Coldplay song)
+-- Filter to exactly 6 lowercase alphabetic characters
+-- Then cross-reference with Coldplay discography manually
+-- Expected: yellow
+-- This answers Q115 (Coldplay song in wordlist)
+
+index=botsv1 sourcetype=stream:http src_ip="23.22.63.114"
+  uri="/joomla/administrator/index.php" http_method=POST
+| rex field=form_data "(?i)passwd=(?<password>[a-z]{6})"
+| dedup password
+| eval pwlen=len(password)
+| where pwlen=6
+| table password
+
+
+-- Step 5 — Calculate average password length across all attempts
+-- Expected: 6 (rounded to nearest integer)
+-- This answers Q117 (average brute force password length)
+
+index=botsv1 sourcetype=stream:http src_ip="23.22.63.114"
+  uri="/joomla/administrator/index.php" http_method=POST
+| rex field=form_data "passwd=(?<password>[^&]+)"
+| eval pwlen=len(password)
+| stats avg(pwlen) as avg_length count as total_attempts
+
+
+-- Step 6 — Count unique passwords in the wordlist
+-- Expected: 412
+-- This answers Q119 (unique passwords attempted)
+
+index=botsv1 sourcetype=stream:http src_ip="23.22.63.114"
+  uri="/joomla/administrator/index.php" http_method=POST
+| rex field=form_data "passwd=(?<password>[^&]+)"
+| stats dc(password) as unique_passwords

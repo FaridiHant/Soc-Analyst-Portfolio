@@ -1,0 +1,60 @@
+-- ============================================================
+-- Case:    INC-BOTSv1-2016-S1-001 | Web Defacement
+-- Phase:   E (Explore) + A (Analyze)
+-- Topic:   CMS Identification + Defacement File Detection
+-- MITRE:   T1592 — Gather Victim Host Information
+--          T1491.001 — Internal Defacement
+-- CTF:     Q103, Q104, Q105, Q106
+-- ============================================================
+
+
+-- Step 1 — Identify the CMS via successful HTTP responses
+-- Filter to HTTP 200 GET requests to see what the server is serving
+-- Expected: URIs contain /joomla/ path references
+-- This answers Q103 (CMS = Joomla)
+
+index=botsv1 sourcetype=stream:http dest_ip="192.168.250.70"
+  status=200 http_method=GET
+| table _time, uri, site, src_ip
+| head 30
+
+
+-- Step 2 — Find the defacement file
+-- KEY INSIGHT: After compromise the SERVER fetches its own defacement file
+-- The victim server (192.168.250.70) appears as src_ip here — not the attacker
+-- This is the anomaly from the "Rare" question in the Explore phase
+-- Expected: request field = poisonivy-is-coming-for-you-batman.jpeg
+-- This answers Q104 (defacement filename)
+
+index=botsv1 sourcetype=stream:http src_ip="192.168.250.70" http_method=GET
+| table _time, request, site, status, dest_ip
+
+
+-- Step 3 — Identify the attacker-controlled FQDN (dynamic DNS)
+-- The site field in Step 2 reveals the domain hosting the defacement image
+-- Expected: prankglassinebracket.jumpingcrab.com
+-- This answers Q105 (malicious FQDN)
+
+index=botsv1 sourcetype=stream:http src_ip="192.168.250.70"
+| search site="*jumpingcrab*"
+| table _time, site, request, status
+
+
+-- Step 4 — Find the pre-staged infrastructure IP
+-- Look for all traffic associated with jumpingcrab.com or hopto.org domains
+-- Expected: 23.22.63.114 is linked to these domains (different from scanner IP)
+-- This answers Q106 (pre-staged attacker IP)
+
+index=botsv1 sourcetype=stream:http
+| search site="*.jumpingcrab.com" OR site="*.hopto.org"
+| stats count by site, src_ip, dest_ip
+| sort -count
+
+
+-- Step 5 — Confirm the two attacker IPs serve different roles
+-- 40.80.148.42 = scanner  |  23.22.63.114 = infrastructure + brute force
+
+index=botsv1 sourcetype=stream:http
+| search src_ip="40.80.148.42" OR src_ip="23.22.63.114"
+| stats count by src_ip, http_method, status
+| sort src_ip, -count

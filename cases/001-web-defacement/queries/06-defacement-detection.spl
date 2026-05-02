@@ -1,0 +1,66 @@
+-- ============================================================
+-- Case:    INC-BOTSv1-2016-S1-001 | Web Defacement
+-- Phase:   E (Explore) — Pattern: Rare/Anomalous Events
+-- Topic:   Website Defacement Detection
+-- MITRE:   T1491.001 — Internal Defacement
+-- CTF:     Q104, Q105
+-- ============================================================
+
+
+-- THE KEY INSIGHT FOR THIS QUERY SET:
+-- Most analysts only filter by attacker IPs (40.80.148.42, 23.22.63.114)
+-- The defacement is only visible when you look at the VICTIM SERVER
+-- as src_ip making an outbound GET request.
+-- A web server should not be initiating external GET requests.
+-- This is the "Rare" pattern from the Explore phase.
+
+
+-- Step 1 — Find all outbound requests from the web server
+-- The server (192.168.250.70) appears as src_ip — that's the anomaly
+-- Expected: GET request for a .jpeg file from a jumpingcrab.com domain
+-- This answers Q104 (defacement file name) and Q105 (malicious FQDN)
+
+index=botsv1 sourcetype=stream:http src_ip="192.168.250.70" http_method=GET
+| table _time, request, site, status, dest_ip
+| sort _time
+
+
+-- Step 2 — Filter specifically to the attacker-controlled domain
+-- Confirms the domain family and ties it to the pre-staged infrastructure
+
+index=botsv1 sourcetype=stream:http src_ip="192.168.250.70"
+| search site="*jumpingcrab.com*"
+| table _time, src_ip, dest_ip, request, site, status
+
+
+-- Step 3 — Confirm the destination IP of the defacement request
+-- This should resolve to 23.22.63.114 (the pre-staged infrastructure IP)
+-- Ties the defacement file back to the same IP used in brute force
+
+index=botsv1 sourcetype=stream:http src_ip="192.168.250.70"
+| search site="*jumpingcrab.com*"
+| stats count by dest_ip, site
+
+
+-- Step 4 — Build a detection rule pattern for this type of anomaly
+-- Web server outbound GET to external non-CDN domain = investigate
+-- This query would work as a saved search / alert in a real environment
+
+index=botsv1 sourcetype=stream:http http_method=GET
+| search src_ip="192.168.250.70"
+| search NOT (site="*.microsoft.com" OR site="*.windows.com"
+             OR site="*.akamai.net" OR site="*.cloudflare.com")
+| table _time, src_ip, dest_ip, request, site, status
+| sort _time
+
+
+-- Step 5 — Full timeline of the defacement sequence
+-- Combine the inbound attack traffic and the outbound server request
+-- to see the exact moment defacement occurred
+
+index=botsv1 sourcetype=stream:http
+| search (src_ip="23.22.63.114" AND dest_ip="192.168.250.70")
+      OR (src_ip="192.168.250.70" AND site="*jumpingcrab.com*")
+| eval direction=if(src_ip="192.168.250.70","SERVER→ATTACKER-INFRA","ATTACKER→SERVER")
+| table _time, direction, src_ip, dest_ip, http_method, request, status
+| sort _time

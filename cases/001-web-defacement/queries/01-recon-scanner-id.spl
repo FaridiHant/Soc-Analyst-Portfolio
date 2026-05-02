@@ -1,0 +1,48 @@
+-- ============================================================
+-- Case:    INC-BOTSv1-2016-S1-001 | Web Defacement
+-- Phase:   E (Explore) + A (Analyze)
+-- Topic:   Reconnaissance — Attacker IP + Scanner Identification
+-- MITRE:   T1595.002 — Active Scanning: Vulnerability Scanning
+-- CTF:     Q101, Q102
+-- ============================================================
+
+
+-- Step 1 — Find the most active source IPs hitting the web server
+-- Expected: 40.80.148.42 will be at or near the top
+-- This answers Q101 (attacker scanning IP)
+
+index=botsv1 sourcetype=stream:http dest_ip="192.168.250.70"
+| top limit=10 src_ip
+
+
+-- Step 2 — Confirm the scanner vendor via request headers
+-- The src_headers field contains the tool's self-identifying string
+-- Expected: "Acunetix Web Vulnerability Scanner - Free Edition"
+-- This answers Q102 (scanner vendor = Acunetix)
+
+index=botsv1 sourcetype=stream:http src_ip="40.80.148.42"
+| table src_headers
+| head 1
+
+
+-- Step 3 — Cross-validate via FortiGate UTM (second source)
+-- fgt_utm uses srcip (not src_ip) — different field name
+-- Expected: msg field contains "tools: Acunetix.Web.Vulnerability.Scanner"
+
+index=botsv1 sourcetype=fgt_utm srcip="40.80.148.42"
+| table _time, srcip, dstip, msg, action
+
+
+-- Step 4 — Scope the full request volume from attacker IP
+-- Useful for building the timeline and understanding scan duration
+
+index=botsv1 sourcetype=stream:http src_ip="40.80.148.42"
+| timechart span=1m count
+
+
+-- Step 5 — Check what other sourcetypes captured this IP
+-- Confirms visibility coverage across the sensor stack
+
+index=botsv1 (src_ip="40.80.148.42" OR srcip="40.80.148.42")
+| stats count by sourcetype
+| sort -count

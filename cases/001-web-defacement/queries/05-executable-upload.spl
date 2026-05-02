@@ -1,0 +1,76 @@
+-- ============================================================
+-- Case:    INC-BOTSv1-2016-S1-001 | Web Defacement
+-- Phase:   A (Analyze) — Post-Exploitation
+-- Topic:   Malicious Executable Upload + Hash Identification
+-- MITRE:   T1059 — Command and Scripting Interpreter
+-- CTF:     Q109, Q110
+-- ============================================================
+
+
+-- Step 1 — Find the uploaded executable via FortiGate UTM
+-- fgt_utm logs file transfers and stores filename + SHA256 hash
+-- NOTE: The field is srcip (not src_ip) in this sourcetype
+-- Expected: filename = 3791.exe
+-- This answers Q109 (uploaded executable name)
+
+index=botsv1 sourcetype=fgt_utm srcip="40.80.148.42" filename=*.exe
+| table _time, srcip, dstip, filename, file_hash, action
+
+
+-- Step 2 — Get the MD5 hash from Sysmon (NOT fgt_utm)
+-- fgt_utm file_hash = SHA256 (64 characters) — wrong field for this question
+-- Sysmon EventCode=1 = process creation, includes MD5 field separately
+-- Expected: AAE3F5A29935E6ABCC2C2754D12A9AF0
+-- This answers Q110 (MD5 hash of 3791.exe)
+
+index=botsv1 sourcetype="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational"
+  CommandLine="3791.exe"
+| table _time, MD5, SHA256, CommandLine, ParentProcessId, User
+
+
+-- Step 3 — Cross-validate: confirm fgt_utm and Sysmon are describing the same file
+-- The SHA256 from fgt_utm should match the SHA256 field in Sysmon EventCode=1
+-- If they match, you have dual-source confirmation of the same file transfer + execution
+
+index=botsv1 sourcetype="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational"
+  CommandLine="3791.exe"
+| table _time, MD5, SHA256
+
+
+-- Step 4 — Check what 3791.exe did after execution (child processes)
+-- EventCode=1 with ParentProcessId matching the 3791.exe process
+-- This looks for any commands or scripts launched by the executable
+
+index=botsv1 sourcetype="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational"
+  EventCode=1
+| where ParentProcessId="[insert PID from Step 2]"
+| table _time, CommandLine, ParentProcessId, MD5
+
+
+-- Step 5 — Check for file write events from the malicious process (Sysmon EventCode=11)
+-- This would show any files dropped by 3791.exe after execution
+
+index=botsv1 sourcetype="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational"
+  EventCode=11
+| search TargetFilename="*3791*" OR Image="*3791*"
+| table _time, Image, TargetFilename
+
+
+-- ============================================================
+-- EXTERNAL ENRICHMENT NOTE (Q111, Q112)
+-- These require VirusTotal — no SPL involved
+--
+-- Q111: SHA256 of spear-phishing malware
+--   1. Go to virustotal.com
+--   2. Search for IP: 23.22.63.114
+--   3. Relations tab → look for associated files
+--   4. Find: MirandaTateScreensaver.scr.exe
+--   Answer: 9709473ab351387aab9e816eff3910b9f28a7a70202e250ed46dba8f820f34a8
+--
+-- Q112: Hex code embedded in malware
+--   1. VirusTotal → Community tab for the .scr.exe file
+--   2. A hex string is visible in community notes
+--   3. Decoded: "Steve Brant's Beard is a powerful thing.
+--               Find this message and ask him to buy you a beer!!!"
+--   This hex is a Po1s0n1vy group signature embedded in the binary.
+-- ============================================================

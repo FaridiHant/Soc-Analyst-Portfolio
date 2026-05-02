@@ -1,0 +1,11 @@
+type,value,context,confidence,source,mitre_technique
+IPv4,40.80.148.42,Acunetix vulnerability scanner — primary recon source,HIGH,stream:http src_headers + fgt_utm msg,T1595.002
+IPv4,23.22.63.114,Brute force source + Po1s0n1vy pre-staged infrastructure,HIGH,stream:http form_data + VirusTotal,T1110.001
+domain,prankglassinebracket.jumpingcrab.com,Attacker-controlled dynamic DNS — hosted defacement file,HIGH,stream:http site field,T1491.001
+file,poisonivy-is-coming-for-you-batman.jpeg,Defacement image deployed on imreallynotbatman.com,HIGH,stream:http request field,T1491.001
+file,3791.exe,Malicious executable uploaded via Joomla admin post-compromise,HIGH,fgt_utm filename + Sysmon EventCode=1,T1059
+hash_md5,AAE3F5A29935E6ABCC2C2754D12A9AF0,MD5 of 3791.exe,HIGH,Sysmon EventCode=1 MD5 field,T1059
+hash_sha256,9709473ab351387aab9e816eff3910b9f28a7a70202e250ed46dba8f820f34a8,MirandaTateScreensaver.scr.exe — spear-phishing payload linked to 23.22.63.114,HIGH,VirusTotal enrichment,T1566.001
+file,MirandaTateScreensaver.scr.exe,Custom spear-phishing malware with Po1s0n1vy hex signature,HIGH,VirusTotal — 23.22.63.114 relations tab,T1566.001
+credential,admin/batman,Joomla administrator credentials compromised via brute force,CONFIRMED,stream:http form_data frequency analysis,T1110.001
+url_pattern,/joomla/administrator/index.php,Targeted admin login endpoint — 412 POST requests,HIGH,stream:http uri field,T1110.001
