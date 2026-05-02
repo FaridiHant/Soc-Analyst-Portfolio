@@ -111,6 +111,3 @@ Alternate path (spear phishing):
 
 ---
 
-## Navigator Layer
-
-The techniques above can be imported into MITRE ATT&CK Navigator at [attack.mitre.org/resources/attack-navigator](https://attack.mitre.org/resources/attack-navigator/) using the technique IDs listed.
