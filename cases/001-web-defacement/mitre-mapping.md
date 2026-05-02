@@ -17,7 +17,7 @@ Evidence:
 
 ---
 
-### T1592 — Gather Victim Host Information
+### T1592 ( Gather Victim Host Information )
 **Tactic:** Reconnaissance
 
 The Acunetix scan identified Joomla as the CMS platform through HTTP 200 responses on `/joomla/*` URI paths. This directly informed the next attack phase (brute forcing the Joomla admin portal).
@@ -27,7 +27,7 @@ Evidence:
 
 ---
 
-### T1110.001 — Brute Force: Password Guessing
+### T1110.001 ( Brute Force: Password Guessing )
 **Tactic:** Credential Access
 
 23.22.63.114 sent 412 POST requests to `/joomla/administrator/index.php` using a custom wordlist. Average password length was 6 characters. The list included OSINT-derived entries (employee-linked Coldplay song reference).
@@ -39,7 +39,7 @@ Evidence:
 
 ---
 
-### T1190 — Exploit Public-Facing Application
+### T1190 ( Exploit Public-Facing Application )
 **Tactic:** Initial Access
 
 The Joomla admin portal was publicly accessible without additional access controls. Following the brute force, password `batman` was confirmed via frequency analysis (count=2 vs count=1 for all other candidates). The second occurrence represents the attacker authenticating.
@@ -50,7 +50,7 @@ Evidence:
 
 ---
 
-### T1059 — Command and Scripting Interpreter
+### T1059 ( Command and Scripting Interpreter )
 **Tactic:** Execution
 
 Following authentication, `3791.exe` was uploaded via the Joomla admin panel and executed on the target host.
@@ -63,7 +63,7 @@ Note: `fgt_utm` stores SHA256 in `file_hash`. MD5 is only available via Sysmon.
 
 ---
 
-### T1491.001 — Internal Defacement
+### T1491.001  ( Internal Defacement )
 **Tactic:** Impact
 
 The web server (192.168.250.70) initiated an outbound GET request — appearing as `src_ip` — to `prankglassinebracket.jumpingcrab.com`, fetching `poisonivy-is-coming-for-you-batman.jpeg`. This file was served as the defaced homepage.
@@ -75,7 +75,7 @@ Evidence:
 
 ---
 
-### T1566.001 — Phishing: Spear Phishing Attachment
+### T1566.001 ( Phishing: Spear Phishing Attachment )
 **Tactic:** Initial Access (Alternate TTP)
 
 VirusTotal enrichment of 23.22.63.114 (Po1s0n1vy infrastructure IP) reveals an associated file: `MirandaTateScreensaver.scr.exe`. This is a custom-built malware sample — the binary contains a Po1s0n1vy group signature encoded in hex in the VirusTotal community tab.
